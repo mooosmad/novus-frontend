@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import Image from "next/image"
 import {
   IconCamera,
   IconChartBar,
@@ -160,9 +161,21 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               asChild
               className="data-[slot=sidebar-menu-button]:!p-1.5"
             >
-              <a href="#">
-                <IconInnerShadowTop className="!size-5" />
-                <span className="text-base font-semibold">Acme Inc.</span>
+              <a href="#" className="flex items-center gap-2" >
+                <Image 
+                  src="/medic.png" 
+                  alt="Novus Medic" 
+                  width={200}
+                  height={200}
+                  className="object-contain"
+                  onError={() => {
+                    console.log('Sidebar logo failed to load: /medic.png');
+                  }}
+                />
+                {/* <div className="flex flex-col">
+                  <span className="text-base font-semibold">Novus Medic</span>
+                  <span className="text-xs text-muted-foreground">Emergent Tech</span>
+                </div> */}
               </a>
             </SidebarMenuButton>
           </SidebarMenuItem>
