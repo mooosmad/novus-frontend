@@ -3,21 +3,19 @@
 import * as React from "react"
 import Image from "next/image"
 import {
-  IconCamera,
-  IconChartBar,
-  IconDashboard,
-  IconDatabase,
-  IconFileAi,
-  IconFileDescription,
-  IconFileWord,
+  IconHome,
+  IconUsersGroup,
+  IconCalendarClock,
+  IconHeartbeat,
+  IconFileInvoice,
+  IconCash,
+  IconReport,
+  IconSettings,
+  IconTool,
+  IconUserShield,
   IconFolder,
   IconHelp,
-  IconInnerShadowTop,
-  IconListDetails,
-  IconReport,
   IconSearch,
-  IconSettings,
-  IconUsers,
 } from "@tabler/icons-react"
 
 import { NavDocuments } from "@/components/nav-documents"
@@ -36,117 +34,84 @@ import {
 
 const data = {
   user: {
-    name: "shadcn",
-    email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
+    name: "Dr. Koffi",
+    email: "medecin@novus.ci",
+    avatar: "/avatars/medecin.png",
   },
   navMain: [
     {
-      title: "Dashboard",
-      url: "#",
-      icon: IconDashboard,
+      title: "Accueil",
+      url: "/",
+      icon: IconHome,
     },
     {
-      title: "Lifecycle",
-      url: "#",
-      icon: IconListDetails,
+      title: "Enrôlement",
+      url: "/patients/enrolement",
+      icon: IconUsersGroup,
     },
     {
-      title: "Analytics",
-      url: "#",
-      icon: IconChartBar,
+      title: "Prise de RDV",
+      url: "/rendez-vous",
+      icon: IconCalendarClock,
     },
     {
-      title: "Projects",
-      url: "#",
-      icon: IconFolder,
+      title: "Actes médicaux",
+      url: "/actes-medicaux",
+      icon: IconHeartbeat,
     },
     {
-      title: "Team",
-      url: "#",
-      icon: IconUsers,
-    },
-  ],
-  navClouds: [
-    {
-      title: "Capture",
-      icon: IconCamera,
-      isActive: true,
-      url: "#",
-      items: [
-        {
-          title: "Active Proposals",
-          url: "#",
-        },
-        {
-          title: "Archived",
-          url: "#",
-        },
-      ],
+      title: "Facturation",
+      url: "/facturation",
+      icon: IconFileInvoice,
     },
     {
-      title: "Proposal",
-      icon: IconFileDescription,
-      url: "#",
-      items: [
-        {
-          title: "Active Proposals",
-          url: "#",
-        },
-        {
-          title: "Archived",
-          url: "#",
-        },
-      ],
+      title: "Caisse",
+      url: "/caisse",
+      icon: IconCash,
     },
     {
-      title: "Prompts",
-      icon: IconFileAi,
-      url: "#",
-      items: [
-        {
-          title: "Active Proposals",
-          url: "#",
-        },
-        {
-          title: "Archived",
-          url: "#",
-        },
-      ],
+      title: "Rapports",
+      url: "/rapports",
+      icon: IconReport,
+    },
+    {
+      title: "Configuration",
+      url: "/config",
+      icon: IconTool,
+    },
+    {
+      title: "Admin",
+      url: "/admin",
+      icon: IconUserShield,
     },
   ],
   navSecondary: [
     {
-      title: "Settings",
-      url: "#",
+      title: "Paramètres",
+      url: "/settings",
       icon: IconSettings,
     },
     {
-      title: "Get Help",
-      url: "#",
+      title: "Aide",
+      url: "/help",
       icon: IconHelp,
     },
     {
-      title: "Search",
-      url: "#",
+      title: "Recherche",
+      url: "/search",
       icon: IconSearch,
     },
   ],
   documents: [
     {
-      name: "Data Library",
-      url: "#",
-      icon: IconDatabase,
+      name: "Dossiers Patients",
+      url: "/patients",
+      icon: IconFolder,
     },
     {
-      name: "Reports",
-      url: "#",
+      name: "Rapports",
+      url: "/rapports",
       icon: IconReport,
-    },
-    {
-      name: "Word Assistant",
-      url: "#",
-      icon: IconFileWord,
     },
   ],
 }
@@ -161,21 +126,17 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               asChild
               className="data-[slot=sidebar-menu-button]:!p-1.5"
             >
-              <a href="#" className="flex items-center gap-2" >
-                <Image 
-                  src="/medic.png" 
-                  alt="Novus Medic" 
-                  width={200}
-                  height={200}
+              <a href="#" className="flex items-center gap-2">
+                <Image
+                  src="/medic.png"
+                  alt="Novus Medic"
+                  width={120}
+                  height={120}
                   className="object-contain"
                   onError={() => {
-                    console.log('Sidebar logo failed to load: /medic.png');
+                    console.log("Sidebar logo failed to load: /medic.png")
                   }}
                 />
-                {/* <div className="flex flex-col">
-                  <span className="text-base font-semibold">Novus Medic</span>
-                  <span className="text-xs text-muted-foreground">Emergent Tech</span>
-                </div> */}
               </a>
             </SidebarMenuButton>
           </SidebarMenuItem>
