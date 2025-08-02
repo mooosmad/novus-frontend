@@ -10,13 +10,15 @@ interface AppointmentModalProps {
   onClose: () => void
   selectedDate?: Date | null
   selectedTimeSlot?: string
+  onSubmit?: (appointmentData: any) => void
 }
 
 export default function AppointmentModal({ 
   isOpen, 
   onClose, 
   selectedDate, 
-  selectedTimeSlot 
+  selectedTimeSlot,
+  onSubmit
 }: AppointmentModalProps) {
   const [formData, setFormData] = useState({
     doctor: 'DOCTOR10',
@@ -40,6 +42,11 @@ export default function AppointmentModal({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     console.log('Appointment data:', formData)
+    
+    if (onSubmit) {
+      onSubmit(formData)
+    }
+    
     onClose()
   }
 

@@ -17,7 +17,7 @@ const tabItems: TabItem[] = [
   { id: 'overview', label: 'Enrôlement' },
   { id: 'portfolios', label: 'Prise de RDV' },
   { id: 'documents', label: 'Actes médicaux' },
-  { id: 'communication', label: 'Facturation' },
+  { id: 'billing', label: 'Facturation' },
   { id: 'caisse', label: 'Caisse' },
 ]
 

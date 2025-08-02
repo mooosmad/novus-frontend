@@ -14,6 +14,10 @@ interface Patient {
   dateNaissance: string
 }
 
+interface PatientTableProps {
+  onViewDetails?: (patientId: string) => void
+}
+
 // Données de démonstration
 const mockPatients: Patient[] = [
   {
@@ -45,7 +49,7 @@ const mockPatients: Patient[] = [
   }
 ]
 
-export default function PatientTable() {
+export default function PatientTable({ onViewDetails }: PatientTableProps) {
   const [patients] = useState<Patient[]>(mockPatients)
   const [currentPage, setCurrentPage] = useState(1)
   const [pageSize, setPageSize] = useState(10)
@@ -86,6 +90,12 @@ export default function PatientTable() {
   const startIndex = (currentPage - 1) * pageSize
   const endIndex = startIndex + pageSize
   const currentPatients = filteredPatients.slice(startIndex, endIndex)
+
+  const handleViewDetails = (patientId: string) => {
+    if (onViewDetails) {
+      onViewDetails(patientId)
+    }
+  }
 
   return (
     <motion.div 
@@ -190,9 +200,15 @@ export default function PatientTable() {
                     <td className="px-6 py-4 text-sm text-gray-900">{patient.dateNaissance}</td>
                   )}
                   <td className="px-6 py-4">
-                    <button className="text-blue-600 hover:text-blue-800 transition-colors">
+                    <motion.button 
+                      className="text-blue-600 hover:text-blue-800 transition-colors p-2 hover:bg-blue-50 rounded-lg"
+                      onClick={() => handleViewDetails(patient.id)}
+                      whileHover={{ scale: 1.1 }}
+                      whileTap={{ scale: 0.9 }}
+                      title="Vue détaillée"
+                    >
                       <Eye className="w-4 h-4" />
-                    </button>
+                    </motion.button>
                   </td>
                 </motion.tr>
               ))

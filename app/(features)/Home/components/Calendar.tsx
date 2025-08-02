@@ -5,11 +5,22 @@ import { useState } from 'react'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import AppointmentModal from './AppointmentModal'
 
+interface CalendarEvent {
+  id: string
+  doctor: string
+  appointmentNumber: string
+  startTime: string
+  duration: string
+  endTime: string
+  description: string
+  reason: string
+  date: Date
+  timeSlot: string
+}
+
 interface CalendarProps {
   className?: string
 }
-
-
 
 export default function Calendar({ className = "" }: CalendarProps) {
   const [currentDate, setCurrentDate] = useState(new Date())
@@ -17,6 +28,7 @@ export default function Calendar({ className = "" }: CalendarProps) {
   const [isAppointmentModalOpen, setIsAppointmentModalOpen] = useState(false)
   const [viewMode, setViewMode] = useState<'day' | 'week' | 'month' | 'doctor'>('doctor')
   const [selectedTimeSlot, setSelectedTimeSlot] = useState<string>('')
+  const [events, setEvents] = useState<CalendarEvent[]>([])
 
   const doctors = [
     'DOCTOR1',
@@ -76,6 +88,18 @@ export default function Calendar({ className = "" }: CalendarProps) {
     return selectedDate?.toDateString() === date.toDateString()
   }
 
+  const getEventsForDate = (date: Date) => {
+    return events.filter(event => 
+      event.date.toDateString() === date.toDateString()
+    )
+  }
+
+  const getEventsForDoctorAndTime = (doctor: string, timeSlot: string) => {
+    return events.filter(event => 
+      event.doctor === doctor && event.timeSlot === timeSlot
+    )
+  }
+
   const handleDateClick = (date: Date) => {
     setSelectedDate(date)
     setIsAppointmentModalOpen(true)
@@ -84,6 +108,26 @@ export default function Calendar({ className = "" }: CalendarProps) {
   const handleTimeSlotClick = (timeSlot: string) => {
     setSelectedTimeSlot(timeSlot)
     setIsAppointmentModalOpen(true)
+  }
+
+  const handleAppointmentSubmit = (appointmentData: any) => {
+    const newEvent: CalendarEvent = {
+      id: Date.now().toString(),
+      doctor: appointmentData.doctor,
+      appointmentNumber: appointmentData.appointmentNumber,
+      startTime: appointmentData.startTime,
+      duration: appointmentData.duration,
+      endTime: appointmentData.endTime,
+      description: appointmentData.description,
+      reason: appointmentData.reason,
+      date: selectedDate || new Date(),
+      timeSlot: selectedTimeSlot || '08'
+    }
+    
+    setEvents(prev => [...prev, newEvent])
+    setIsAppointmentModalOpen(false)
+    setSelectedDate(null)
+    setSelectedTimeSlot('')
   }
 
   const goToToday = () => {
@@ -146,13 +190,16 @@ export default function Calendar({ className = "" }: CalendarProps) {
 
           {/* Calendar days */}
           <div className="grid grid-cols-7 gap-1">
-            {days.map((day, index) => (
-                              <motion.button
+            {days.map((day, index) => {
+              const dayEvents = day ? getEventsForDate(day) : []
+              
+              return (
+                <motion.button
                   key={index}
                   onClick={() => day && handleDateClick(day)}
                   disabled={!day}
                   className={`
-                    aspect-square p-2 rounded-lg text-sm font-medium transition-all duration-200
+                    aspect-square p-2 rounded-lg text-sm font-medium transition-all duration-200 relative
                     ${!day ? 'invisible' : ''}
                     ${isToday(day) ? 'bg-blue-100 text-blue-700' : ''}
                     ${isSelected(day) ? 'bg-blue-600 text-white' : ''}
@@ -161,9 +208,28 @@ export default function Calendar({ className = "" }: CalendarProps) {
                   whileHover={day ? { scale: 1.05 } : {}}
                   whileTap={day ? { scale: 0.95 } : {}}
                 >
-                  {day?.getDate()}
+                  <div className="flex flex-col h-full">
+                    <span className="text-center">{day?.getDate()}</span>
+                    
+                    {/* Event indicators */}
+                    {dayEvents.length > 0 && (
+                      <div className="flex flex-col gap-1 mt-1">
+                        {dayEvents.slice(0, 2).map((event) => (
+                          <div
+                            key={event.id}
+                            className="w-full h-1 bg-green-500 rounded-full"
+                            title={`${event.doctor} - ${event.description}`}
+                          />
+                        ))}
+                        {dayEvents.length > 2 && (
+                          <div className="w-full h-1 bg-gray-400 rounded-full" />
+                        )}
+                      </div>
+                    )}
+                  </div>
                 </motion.button>
-            ))}
+              )
+            })}
           </div>
         </div>
       </div>
@@ -259,19 +325,31 @@ export default function Calendar({ className = "" }: CalendarProps) {
             <div className="divide-y divide-gray-100">
               {doctors.map((doctor) => (
                 <div key={doctor} className="flex h-16">
-                  {timeSlots.map((time) => (
-                    <motion.div
-                      key={`${doctor}-${time}`}
-                      onClick={() => handleTimeSlotClick(time)}
-                      className="flex-1 border-r border-gray-100 last:border-r-0 hover:bg-blue-50 transition-colors cursor-pointer relative group"
-                      whileHover={{ scale: 1.02 }}
-                      whileTap={{ scale: 0.98 }}
-                    >
-                      <div className="absolute inset-0 flex items-center justify-center">
-                        <div className="w-1 h-1 bg-gray-300 rounded-full opacity-0 group-hover:opacity-100 transition-opacity" />
-                      </div>
-                    </motion.div>
-                  ))}
+                  {timeSlots.map((time) => {
+                    const slotEvents = getEventsForDoctorAndTime(doctor, time)
+                    
+                    return (
+                      <motion.div
+                        key={`${doctor}-${time}`}
+                        onClick={() => handleTimeSlotClick(time)}
+                        className="flex-1 border-r border-gray-100 last:border-r-0 hover:bg-blue-50 transition-colors cursor-pointer relative group"
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                      >
+                        <div className="absolute inset-0 flex items-center justify-center">
+                          {slotEvents.length > 0 ? (
+                            <div className="w-full h-full bg-green-100 border border-green-300 rounded flex items-center justify-center">
+                              <div className="text-xs text-green-700 font-medium">
+                                RDV
+                              </div>
+                            </div>
+                          ) : (
+                            <div className="w-1 h-1 bg-gray-300 rounded-full opacity-0 group-hover:opacity-100 transition-opacity" />
+                          )}
+                        </div>
+                      </motion.div>
+                    )
+                  })}
                 </div>
               ))}
             </div>
@@ -312,6 +390,7 @@ export default function Calendar({ className = "" }: CalendarProps) {
         onClose={() => setIsAppointmentModalOpen(false)}
         selectedDate={selectedDate}
         selectedTimeSlot={selectedTimeSlot}
+        onSubmit={handleAppointmentSubmit}
       />
     </div>
   )
