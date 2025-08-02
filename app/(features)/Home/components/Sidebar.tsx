@@ -12,8 +12,7 @@ import {
   Settings,
   Shield,
   User,
-  LogOut,
-  Globe
+  LogOut
 } from 'lucide-react'
 
 interface NavItem {
@@ -38,7 +37,7 @@ const navItems: NavItem[] = [
 export default function Sidebar() {
   const [activeItem, setActiveItem] = useState('accueil')
   const [isCollapsed, setIsCollapsed] = useState(false)
-  const [language, setLanguage] = useState('FR')
+
 
   const containerVariants = {
     expanded: { width: 280 },
@@ -58,6 +57,25 @@ export default function Sidebar() {
       animate={isCollapsed ? "collapsed" : "expanded"}
       transition={{ duration: 0.3, ease: "easeInOut" }}
     >
+
+<motion.div
+          className="mb-6 px-3"
+          variants={itemVariants}
+          initial="hidden"
+          animate="visible"
+          transition={{ delay: 0.1 }}
+        >
+          <div className="flex items-center gap-3">
+            <img 
+              src="/medic.png" 
+              width={500}
+              height={500}
+              alt="Medical Logo"
+              className="w-full h-full rounded-xl object-contain"
+            />
+          </div>
+        </motion.div>
+
       <div className="flex flex-col h-full p-4">
         {/* Avatar Section */}
         <motion.div 
@@ -141,28 +159,8 @@ export default function Sidebar() {
               )}
             </motion.button>
           ))}
-        </nav>
 
-        {/* Language Selector */}
-        <motion.div
-          className="mb-6 px-3"
-          variants={itemVariants}
-          initial="hidden"
-          animate="visible"
-          transition={{ delay: 0.1 }}
-        >
-          <div className="flex items-center gap-3">
-            <img 
-              src="/medic.png" 
-              width={500}
-              height={500}
-              alt="Medical Logo"
-              className="w-full h-full rounded-xl object-contain"
-            />
-          </div>
-        </motion.div>
-
-        {/* Bottom Section */}
+          {/* Bottom Section */}
         <motion.div 
           className="pt-4 border-t border-gray-200/50"
           variants={itemVariants}
@@ -178,12 +176,20 @@ export default function Sidebar() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
+                
               >
+                
                 Déconnexion
               </motion.span>
             )}
           </button>
         </motion.div>
+        </nav>
+
+        {/* Language Selector */}
+       
+
+        
 
         {/* Toggle Button */}
         <motion.button

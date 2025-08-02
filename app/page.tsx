@@ -7,8 +7,16 @@ export default function RootPage() {
   const router = useRouter()
 
   useEffect(() => {
-    // Redirection automatique vers Home
-    router.replace('/Home')
+    // Vérifier si l'utilisateur est authentifié
+    const isAuthenticated = localStorage.getItem('isAuthenticated')
+    
+    if (isAuthenticated === 'true') {
+      // Si authentifié, rediriger vers Home
+      router.replace('/Home')
+    } else {
+      // Sinon, rediriger vers le login
+      router.replace('/login2')
+    }
   }, [router])
 
   return (

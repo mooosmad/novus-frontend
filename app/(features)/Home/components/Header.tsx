@@ -1,7 +1,7 @@
 "use client"
 
 import { motion } from 'framer-motion'
-import { Bell, User, LogOut, Globe } from 'lucide-react'
+import { Bell, User, LogOut } from 'lucide-react'
 
 export default function Header() {
   const containerVariants = {

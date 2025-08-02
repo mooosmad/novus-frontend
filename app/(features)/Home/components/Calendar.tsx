@@ -2,22 +2,14 @@
 
 import { motion, AnimatePresence } from 'framer-motion'
 import { useState } from 'react'
-import { ChevronLeft, ChevronRight, Calendar as CalendarIcon, Clock, User, MapPin } from 'lucide-react'
+import { ChevronLeft, ChevronRight } from 'lucide-react'
 import AppointmentModal from './AppointmentModal'
 
 interface CalendarProps {
   className?: string
 }
 
-interface Appointment {
-  id: string
-  doctor: string
-  patient: string
-  startTime: string
-  endTime: string
-  description: string
-  reason: string
-}
+
 
 export default function Calendar({ className = "" }: CalendarProps) {
   const [currentDate, setCurrentDate] = useState(new Date())
@@ -126,7 +118,7 @@ export default function Calendar({ className = "" }: CalendarProps) {
               onClick={goToToday}
               className="px-4 py-2 text-sm font-medium text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
             >
-              Aujourd'hui
+              Aujourd&apos;hui
             </button>
             <button
               onClick={goToNextMonth}
@@ -194,7 +186,7 @@ export default function Calendar({ className = "" }: CalendarProps) {
               onClick={goToToday}
               className="px-4 py-2 text-sm font-medium text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
             >
-              Aujourd'hui
+              Aujourd&apos;hui
             </button>
             <button
               onClick={goToNextMonth}
@@ -217,7 +209,7 @@ export default function Calendar({ className = "" }: CalendarProps) {
             ].map((view) => (
               <button
                 key={view.key}
-                onClick={() => setViewMode(view.key as any)}
+                onClick={() => setViewMode(view.key as 'day' | 'week' | 'month' | 'doctor')}
                 className={`px-3 py-1.5 text-sm font-medium rounded-lg transition-colors ${
                   viewMode === view.key
                     ? 'bg-blue-600 text-white'
@@ -238,7 +230,7 @@ export default function Calendar({ className = "" }: CalendarProps) {
               <h3 className="font-medium text-gray-900">Médecins</h3>
             </div>
             <div className="divide-y divide-gray-100">
-              {doctors.map((doctor, index) => (
+              {doctors.map((doctor) => (
                 <div
                   key={doctor}
                   className="p-4 h-16 flex items-center justify-center text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors cursor-pointer"
@@ -267,7 +259,7 @@ export default function Calendar({ className = "" }: CalendarProps) {
             <div className="divide-y divide-gray-100">
               {doctors.map((doctor) => (
                 <div key={doctor} className="flex h-16">
-                  {timeSlots.map((time, timeIndex) => (
+                  {timeSlots.map((time) => (
                     <motion.div
                       key={`${doctor}-${time}`}
                       onClick={() => handleTimeSlotClick(time)}

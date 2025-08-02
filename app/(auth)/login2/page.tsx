@@ -2,29 +2,60 @@
 
 import React, { useState } from 'react'
 import { motion } from 'framer-motion'
-import { Eye, EyeOff, Mail, Lock, User } from 'lucide-react'
+import { Eye, EyeOff, Lock, User, AlertCircle } from 'lucide-react'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
+
+// Liste des utilisateurs autorisés
+const authorizedUsers = [
+  { username: 'doctor', password: 'Nvs202112345' },
+  { username: 'doctor2', password: 'Nvs202112345' },
+  { username: 'accueil5', password: 'nvs202123456' },
+  { username: 'caisse6', password: 'nvs202123456' },
+  { username: 'facturation7', password: 'nvs202123456' },
+  { username: 'infirmier2', password: 'nvs202123456' },
+  { username: 'labtech', password: 'NvsT202112345' },
+  { username: 'admin', password: '1234' }
+]
 
 export default function Login2Page() {
   const [showPassword, setShowPassword] = useState(false)
   const [username, setUsername] = useState("")
   const [password, setPassword] = useState("")
   const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState("")
 
-  // const handleSubmit = async (e: React.FormEvent) => {
-  //   e.preventDefault()
-  //   setIsLoading(true)
-    
-  //   // Simuler un délai de connexion
-  //   setTimeout(() => {
-  //     setIsLoading(false)
-  //   }, 2000)
-  // }
+
   const router = useRouter()
-  const handleSubmit = () => {
-    router.push('/Home')
-   
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setIsLoading(true)
+    setError("")
+
+    // Simuler un délai de vérification
+    setTimeout(() => {
+      // console.log('Tentative de connexion:', { username, password })
+      // console.log('Utilisateurs autorisés:', authorizedUsers)
+      
+      const user = authorizedUsers.find(
+        u => u.username.toLowerCase() === username.toLowerCase() && u.password === password
+      )
+
+      console.log('Utilisateur trouvé:', user)
+
+      if (user) {
+        // Stocker l'information de connexion
+        localStorage.setItem('isAuthenticated', 'true')
+        localStorage.setItem('currentUser', user.username)
+        
+        // Redirection vers Home
+        router.push('/Home')
+      } else {
+        setError("Nom d&apos;utilisateur ou mot de passe incorrect")
+        setIsLoading(false)
+      }
+    }, 1000)
   }
 
   return (
@@ -82,9 +113,22 @@ export default function Login2Page() {
               </p>
             </motion.div>
 
+            {/* Message d'erreur */}
+            {error && (
+              <motion.div
+                className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg flex items-center gap-2"
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3 }}
+              >
+                <AlertCircle className="w-4 h-4 text-red-500" />
+                <span className="text-sm text-red-700">{error}</span>
+              </motion.div>
+            )}
+
             {/* Formulaire */}
             <motion.form 
-              // onSubmit={handleSubmit}
+              onSubmit={handleSubmit}
               className="space-y-6"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -97,7 +141,7 @@ export default function Login2Page() {
                 transition={{ type: "spring", stiffness: 300 }}
               >
                 <label htmlFor="username" className="text-sm font-medium text-gray-700">
-                  Nom d'utilisateur
+                  Nom d&apos;utilisateur
                 </label>
                 <div className="relative">
                   <motion.div
@@ -116,6 +160,7 @@ export default function Login2Page() {
                     className="w-full pl-10 pr-4 h-12 border border-gray-200 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all duration-200 bg-white/80 backdrop-blur-sm"
                     placeholder="Entrez votre nom d'utilisateur"
                     required
+                    disabled={isLoading}
                   />
                 </div>
               </motion.div>
@@ -146,6 +191,7 @@ export default function Login2Page() {
                     className="w-full pl-10 pr-10 h-12 border border-gray-200 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all duration-200 bg-white/80 backdrop-blur-sm"
                     placeholder="Entrez votre mot de passe"
                     required
+                    disabled={isLoading}
                   />
                   <motion.button
                     type="button"
@@ -153,6 +199,7 @@ export default function Login2Page() {
                     onClick={() => setShowPassword(!showPassword)}
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.9 }}
+                    disabled={isLoading}
                   >
                     {showPassword ? (
                       <EyeOff className="w-4 h-4" />
@@ -167,9 +214,9 @@ export default function Login2Page() {
               <motion.div className="pt-4">
                 <motion.button
                   type="submit"
-                  className="w-full h-12 bg-blue-950 text-white font-medium rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center gap-2"
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
+                  className="w-full h-12 bg-blue-950 text-white font-medium rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                  whileHover={!isLoading ? { scale: 1.02 } : {}}
+                  whileTap={!isLoading ? { scale: 0.98 } : {}}
                   disabled={isLoading}
                 >
                   {isLoading ? (
@@ -183,17 +230,15 @@ export default function Login2Page() {
                         animate={{ rotate: 360 }}
                         transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
                       />
-                      Connexion en cours...
+                      Vérification en cours...
                     </motion.div>
                   ) : (
                     <motion.div
                       className="flex items-center gap-2"
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
-                     
                       
                     >
-                      
                       Se connecter
                       <motion.div
                         initial={{ x: 0 }}
@@ -216,7 +261,7 @@ export default function Login2Page() {
               transition={{ delay: 1 }}
             >
               <p className="text-xs text-gray-500">
-                Système d'information médical Novus
+                Système d&apos;information médical Novus
               </p>
             </motion.div>
           </div>

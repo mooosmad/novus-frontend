@@ -30,27 +30,7 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
     onClose()
   }
 
-  const modalVariants = {
-    hidden: { opacity: 0, scale: 0.8, y: 20 },
-    visible: { 
-      opacity: 1, 
-      scale: 1, 
-      y: 0,
-      transition: {
-        duration: 0.3,
-        ease: "easeOut"
-      }
-    },
-    exit: { 
-      opacity: 0, 
-      scale: 0.8, 
-      y: 20,
-      transition: {
-        duration: 0.2,
-        ease: "easeIn"
-      }
-    }
-  }
+
 
   const itemVariants = {
     hidden: { opacity: 0, y: 10 },
@@ -63,10 +43,10 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
         <Modal onClose={onClose} showCloseButton={true}>
           <motion.div
             className="w-full h-full flex items-center justify-center p-4"
-            variants={modalVariants}
-            initial="hidden"
-            animate="visible"
-            exit="exit"
+            initial={{ opacity: 0, scale: 0.8, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.8, y: 20 }}
+            transition={{ duration: 0.3 }}
           >
             <motion.div 
               className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl p-8"

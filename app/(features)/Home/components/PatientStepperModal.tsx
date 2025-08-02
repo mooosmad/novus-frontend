@@ -393,7 +393,7 @@ export default function PatientStepperModal({ isOpen, onClose }: PatientStepperM
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm font-medium text-gray-700">Situation d'emploi</label>
+                <label className="text-sm font-medium text-gray-700">Situation d&apos;emploi</label>
                 <select
                   value={formData.situationEmploi}
                   onChange={(e) => handleInputChange('situationEmploi', e.target.value)}
