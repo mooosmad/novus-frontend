@@ -10,7 +10,7 @@ export default function HomePage() {
   return (
     <AuthGuard>
       <motion.div 
-        className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50"
+        className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-50"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.6 }}

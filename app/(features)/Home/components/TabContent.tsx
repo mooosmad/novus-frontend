@@ -83,6 +83,7 @@ export default function TabContent({ activeTab }: TabContentProps) {
             transition={{ duration: 0.3 }}
             className="space-y-6"
           >
+             <PatientIdentifier ShowNewPatientButton={false} />
             <MedicalActsTable />
           </motion.div>
         )

@@ -5,11 +5,6 @@ import { useState } from 'react'
 import { 
   User, 
   Calendar, 
-  Phone, 
-  MapPin, 
-  Heart, 
-  Thermometer, 
-  Weight, 
   Activity,
   FileText,
   Pill,
@@ -17,14 +12,84 @@ import {
   History,
   Microscope,
   TrendingUp,
-  Edit,
-  Plus,
-  Trash2,
   X,
   ChevronDown,
-  ChevronRight
+  Thermometer,
+  Weight,
+  Heart
 } from 'lucide-react'
 import Modal from '@/components/Modal'
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+  ArcElement,
+} from 'chart.js'
+import { Line, Bar } from 'react-chartjs-2'
+
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+  ArcElement
+)
+
+interface ConsultationItem {
+  date: string
+  motif: string
+  interventions: string
+}
+
+interface DiagnosticItem {
+  dateDiagnostic: string
+  finTraitement: string
+  codeDiagnostic: string
+  description: string
+}
+
+interface ConstanteItem {
+  date: string
+  temperature: string
+  tensionGauche: string
+  tensionDroite: string
+  pouls: string
+  poids: string
+  imc: string
+  oxydation: string
+}
+
+interface MedicamentItem {
+  dateOrdonnance: string
+  dateFinTraitement: string
+  medecin: string
+  medicament: string
+  posologie: string
+  indications: string
+}
+
+interface ExamenItem {
+  dateExamen: string
+  medecin: string
+  commentaire: string
+}
+
+interface AnalyseItem {
+  dateAnalyse: string
+  categorie: string
+  description: string
+  archive: string
+}
 
 interface PatientOverview {
   id: string
@@ -40,40 +105,11 @@ interface PatientOverview {
     telephone: string
     adresse: string
   }
-  consultations: {
-    date: string
-    motif: string
-    interventions: string
-  }[]
-  diagnostics: {
-    dateDiagnostic: string
-    finTraitement: string
-    codeDiagnostic: string
-    description: string
-  }[]
-  constantes: {
-    date: string
-    temperature: string
-    tensionGauche: string
-    tensionDroite: string
-    pouls: string
-    poids: string
-    imc: string
-    oxydation: string
-  }[]
-  medicaments: {
-    dateOrdonnance: string
-    dateFinTraitement: string
-    medecin: string
-    medicament: string
-    posologie: string
-    indications: string
-  }[]
-  examens: {
-    dateExamen: string
-    medecin: string
-    commentaire: string
-  }[]
+  consultations: ConsultationItem[]
+  diagnostics: DiagnosticItem[]
+  constantes: ConstanteItem[]
+  medicaments: MedicamentItem[]
+  examens: ExamenItem[]
   antecedents: {
     medicaux: string
     chirurgicaux: string
@@ -81,12 +117,7 @@ interface PatientOverview {
     allergiques: string
     gynecoObstetricaux: string
   }
-  analyses: {
-    dateAnalyse: string
-    categorie: string
-    description: string
-    archive: string
-  }[]
+  analyses: AnalyseItem[]
 }
 
 interface PatientOverviewModalProps {
@@ -145,13 +176,122 @@ const mockPatientOverview: PatientOverview = {
     gynecoObstetricaux: 'Non applicable'
   },
   analyses: [
-    { dateAnalyse: '19/07/2024', categorie: 'Sang', description: 'Résultat d\'analyse de sang', archive: 'PDF' }
+    { dateAnalyse: '19/07/2024', categorie: 'Sang', description: 'Résultat d&apos;analyse de sang', archive: 'PDF' }
   ]
 }
 
-export default function PatientOverviewModal({ isOpen, onClose, patientId }: PatientOverviewModalProps) {
-  const [patientOverview] = useState<PatientOverview>(mockPatientOverview)
-  const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set(['patient', 'consultations']))
+export default function PatientOverviewModal({ isOpen, onClose }: PatientOverviewModalProps) {
+  const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set(['consultations']))
+
+  // Chart data for vital signs
+  const temperatureData = {
+    labels: ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin'],
+    datasets: [
+      {
+        label: 'Température (°C)',
+        data: [36.8, 37.2, 36.9, 37.1, 36.7, 37.0],
+        borderColor: 'rgb(59, 130, 246)',
+        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+        tension: 0.4,
+        fill: true,
+      },
+    ],
+  }
+
+  const bloodPressureData = {
+    labels: ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin'],
+    datasets: [
+      {
+        label: 'Tension Systolique',
+        data: [120, 125, 118, 122, 119, 121],
+        borderColor: 'rgb(239, 68, 68)',
+        backgroundColor: 'rgba(239, 68, 68, 0.1)',
+        tension: 0.4,
+        fill: false,
+      },
+      {
+        label: 'Tension Diastolique',
+        data: [80, 82, 78, 81, 79, 80],
+        borderColor: 'rgb(34, 197, 94)',
+        backgroundColor: 'rgba(34, 197, 94, 0.1)',
+        tension: 0.4,
+        fill: false,
+      },
+    ],
+  }
+
+  const weightData = {
+    labels: ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin'],
+    datasets: [
+      {
+        label: 'Poids (kg)',
+        data: [75, 74.5, 74, 73.8, 73.5, 73.2],
+        backgroundColor: 'rgba(168, 85, 247, 0.8)',
+        borderColor: 'rgb(168, 85, 247)',
+        borderWidth: 2,
+      },
+    ],
+  }
+
+  const pulseData = {
+    labels: ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin'],
+    datasets: [
+      {
+        label: 'Pouls (b/min)',
+        data: [72, 75, 70, 73, 71, 74],
+        borderColor: 'rgb(245, 158, 11)',
+        backgroundColor: 'rgba(245, 158, 11, 0.1)',
+        tension: 0.4,
+        fill: true,
+      },
+    ],
+  }
+
+  const oxygenData = {
+    labels: ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin'],
+    datasets: [
+      {
+        data: [98, 97, 99, 98, 97, 98],
+        backgroundColor: [
+          'rgba(34, 197, 94, 0.8)',
+          'rgba(34, 197, 94, 0.8)',
+          'rgba(34, 197, 94, 0.8)',
+          'rgba(34, 197, 94, 0.8)',
+          'rgba(34, 197, 94, 0.8)',
+          'rgba(34, 197, 94, 0.8)',
+        ],
+        borderColor: 'rgb(34, 197, 94)',
+        borderWidth: 2,
+      },
+    ],
+  }
+
+  const chartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        position: 'top' as const,
+        labels: {
+          usePointStyle: true,
+          padding: 20,
+        },
+      },
+    },
+    scales: {
+      y: {
+        beginAtZero: false,
+        grid: {
+          color: 'rgba(0, 0, 0, 0.1)',
+        },
+      },
+      x: {
+        grid: {
+          color: 'rgba(0, 0, 0, 0.1)',
+        },
+      },
+    },
+  }
 
   const toggleSection = (sectionId: string) => {
     setExpandedSections(prev => 
@@ -190,7 +330,7 @@ export default function PatientOverviewModal({ isOpen, onClose, patientId }: Pat
             transition={{ duration: 0.3 }}
           >
             {/* Header */}
-            <div className="sticky top-0 bg-gradient-to-r from-blue-500 to-blue-600 text-white p-6 rounded-t-2xl">
+            <div className="sticky top-0 bg-gradient-to-r from-blue to-blue-950 text-white p-6 rounded-t-2xl">
               <div className="flex justify-between items-center">
                 {/* <div className="flex items-center gap-4">
                   <h2 className="text-2xl font-bold">Vue d'ensemble - Patient</h2>
@@ -243,40 +383,40 @@ export default function PatientOverviewModal({ isOpen, onClose, patientId }: Pat
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   <div className="space-y-3">
                     <div className="flex items-center gap-2">
-                      <User className="w-5 h-5 text-blue-600" />
+                      <User className="w-5 h-5 text-blue" />
                       <span className="text-lg font-semibold text-gray-900">
-                        {patientOverview.patient.nom} {patientOverview.patient.prenom}
+                        {mockPatientOverview.patient.nom} {mockPatientOverview.patient.prenom}
                       </span>
                     </div>
                     <div className="space-y-1">
-                      <p className="text-sm text-gray-600">Âge: {patientOverview.patient.age} ans</p>
-                      <p className="text-sm text-gray-600">Sexe: {patientOverview.patient.sexe}</p>
-                      <p className="text-sm text-gray-600">Date de naissance: {patientOverview.patient.dateNaissance}</p>
+                      <p className="text-sm text-gray-600">Âge: {mockPatientOverview.patient.age} ans</p>
+                      <p className="text-sm text-gray-600">Sexe: {mockPatientOverview.patient.sexe}</p>
+                      <p className="text-sm text-gray-600">Date de naissance: {mockPatientOverview.patient.dateNaissance}</p>
                     </div>
                   </div>
 
                   <div className="space-y-3">
                     <div className="flex items-center gap-2">
-                      <FileText className="w-5 h-5 text-blue-600" />
+                      <FileText className="w-5 h-5 text-blue" />
                       <span className="text-lg font-semibold text-gray-900">
-                        N°: {patientOverview.patient.codePatient}
+                        N°: {mockPatientOverview.patient.codePatient}
                       </span>
                     </div>
                     <div className="space-y-1">
-                      <p className="text-sm text-gray-600">S. SANG: {patientOverview.patient.groupeSang}</p>
-                      <p className="text-sm text-gray-600">DR: {patientOverview.patient.medecinReferent}</p>
+                      <p className="text-sm text-gray-600">S. SANG: {mockPatientOverview.patient.groupeSang}</p>
+                      <p className="text-sm text-gray-600">DR: {mockPatientOverview.patient.medecinReferent}</p>
                     </div>
                   </div>
 
                   <div className="space-y-3">
                     <div className="flex items-center gap-2">
-                      <Phone className="w-5 h-5 text-blue-600" />
+                      {/* <Phone className="w-5 h-5 text-blue" /> */}
                       <span className="text-lg font-semibold text-gray-900">
-                        TEL: {patientOverview.patient.telephone}
+                        TEL: {mockPatientOverview.patient.telephone}
                       </span>
                     </div>
                     <div className="space-y-1">
-                      <p className="text-sm text-gray-600">Commune: {patientOverview.patient.adresse}</p>
+                      <p className="text-sm text-gray-600">Commune: {mockPatientOverview.patient.adresse}</p>
                     </div>
                   </div>
                 </div>
@@ -284,13 +424,13 @@ export default function PatientOverviewModal({ isOpen, onClose, patientId }: Pat
 
               {/* Collapsible Sections */}
               {[
-                { id: 'consultations', title: 'Consultations antérieures', icon: Calendar, data: patientOverview.consultations },
-                { id: 'diagnostics', title: 'Diagnostics antérieurs', icon: Stethoscope, data: patientOverview.diagnostics },
-                { id: 'constantes', title: 'Constantes antérieures', icon: Activity, data: patientOverview.constantes },
-                { id: 'medicaments', title: 'Médicaments', icon: Pill, data: patientOverview.medicaments },
-                { id: 'examens', title: 'Examens', icon: FileText, data: patientOverview.examens },
-                { id: 'antecedents', title: 'Antécédents', icon: History, data: patientOverview.antecedents },
-                { id: 'analyses', title: 'Analyses', icon: Microscope, data: patientOverview.analyses }
+                { id: 'consultations', title: 'Consultations antérieures', icon: Calendar, data: mockPatientOverview.consultations },
+                { id: 'diagnostics', title: 'Diagnostics antérieurs', icon: Stethoscope, data: mockPatientOverview.diagnostics },
+                { id: 'constantes', title: 'Constantes antérieures', icon: Activity, data: mockPatientOverview.constantes },
+                { id: 'medicaments', title: 'Médicaments', icon: Pill, data: mockPatientOverview.medicaments },
+                { id: 'examens', title: 'Examens', icon: FileText, data: mockPatientOverview.examens },
+                { id: 'antecedents', title: 'Antécédents', icon: History, data: mockPatientOverview.antecedents },
+                { id: 'analyses', title: 'Analyses', icon: Microscope, data: mockPatientOverview.analyses }
               ].map((section) => (
                 <motion.div
                   key={section.id}
@@ -306,7 +446,7 @@ export default function PatientOverviewModal({ isOpen, onClose, patientId }: Pat
                     whileTap={{ scale: 0.99 }}
                   >
                     <div className="flex items-center gap-3">
-                      <section.icon className="w-5 h-5 text-blue-600" />
+                      <section.icon className="w-5 h-5 text-blue" />
                       <h3 className="text-lg font-semibold text-gray-900">{section.title}</h3>
                     </div>
                     <motion.div
@@ -339,6 +479,7 @@ export default function PatientOverviewModal({ isOpen, onClose, patientId }: Pat
                                   </tr>
                                 </thead>
                                 <tbody>
+                                  {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
                                   {Array.isArray(section.data) && section.data.map((item: any, index: number) => (
                                     <motion.tr
                                       key={index}
@@ -370,6 +511,7 @@ export default function PatientOverviewModal({ isOpen, onClose, patientId }: Pat
                                   </tr>
                                 </thead>
                                 <tbody>
+                                  {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
                                   {Array.isArray(section.data) && section.data.map((item: any, index: number) => (
                                     <motion.tr
                                       key={index}
@@ -404,6 +546,7 @@ export default function PatientOverviewModal({ isOpen, onClose, patientId }: Pat
                                   </tr>
                                 </thead>
                                 <tbody>
+                                  {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
                                   {Array.isArray(section.data) && section.data.map((item: any, index: number) => (
                                     <motion.tr
                                       key={index}
@@ -440,6 +583,7 @@ export default function PatientOverviewModal({ isOpen, onClose, patientId }: Pat
                                   </tr>
                                 </thead>
                                 <tbody>
+                                  {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
                                   {Array.isArray(section.data) && section.data.map((item: any, index: number) => (
                                     <motion.tr
                                       key={index}
@@ -467,12 +611,13 @@ export default function PatientOverviewModal({ isOpen, onClose, patientId }: Pat
                               <table className="w-full">
                                 <thead className="bg-gray-50">
                                   <tr>
-                                    <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">Date de l'examen</th>
+                                    <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">Date de l&apos;examen</th>
                                     <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">Médecin</th>
                                     <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">Commentaire</th>
                                   </tr>
                                 </thead>
                                 <tbody>
+                                  {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
                                   {Array.isArray(section.data) && section.data.map((item: any, index: number) => (
                                     <motion.tr
                                       key={index}
@@ -498,7 +643,7 @@ export default function PatientOverviewModal({ isOpen, onClose, patientId }: Pat
                                 <div>
                                   <label className="text-sm font-medium text-gray-700">Antécédents médicaux</label>
                                   <textarea
-                                    value={(section.data as any)?.medicaux || ''}
+                                    value={(section.data as { medicaux: string }).medicaux || ''}
                                     readOnly
                                     className="w-full mt-2 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                                     rows={3}
@@ -507,7 +652,7 @@ export default function PatientOverviewModal({ isOpen, onClose, patientId }: Pat
                                 <div>
                                   <label className="text-sm font-medium text-gray-700">Antécédents chirurgicaux</label>
                                   <textarea
-                                    value={(section.data as any)?.chirurgicaux || ''}
+                                    value={(section.data as { chirurgicaux: string }).chirurgicaux || ''}
                                     readOnly
                                     className="w-full mt-2 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                                     rows={3}
@@ -516,7 +661,7 @@ export default function PatientOverviewModal({ isOpen, onClose, patientId }: Pat
                                 <div>
                                   <label className="text-sm font-medium text-gray-700">Antécédents familiaux</label>
                                   <textarea
-                                    value={(section.data as any)?.familiaux || ''}
+                                    value={(section.data as { familiaux: string }).familiaux || ''}
                                     readOnly
                                     className="w-full mt-2 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                                     rows={3}
@@ -527,7 +672,7 @@ export default function PatientOverviewModal({ isOpen, onClose, patientId }: Pat
                                 <div>
                                   <label className="text-sm font-medium text-gray-700">Antécédents allergiques</label>
                                   <textarea
-                                    value={(section.data as any)?.allergiques || ''}
+                                    value={(section.data as { allergiques: string }).allergiques || ''}
                                     readOnly
                                     className="w-full mt-2 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                                     rows={3}
@@ -536,7 +681,7 @@ export default function PatientOverviewModal({ isOpen, onClose, patientId }: Pat
                                 <div>
                                   <label className="text-sm font-medium text-gray-700">Antécédents gynéco-obstétricaux</label>
                                   <textarea
-                                    value={(section.data as any)?.gynecoObstetricaux || ''}
+                                    value={(section.data as { gynecoObstetricaux: string }).gynecoObstetricaux || ''}
                                     readOnly
                                     className="w-full mt-2 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                                     rows={3}
@@ -551,13 +696,14 @@ export default function PatientOverviewModal({ isOpen, onClose, patientId }: Pat
                               <table className="w-full">
                                 <thead className="bg-gray-50">
                                   <tr>
-                                    <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">Date de l'analyse</th>
+                                    <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">Date de l&apos;analyse</th>
                                     <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">Catégorie</th>
                                     <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">Description</th>
                                     <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">Archive</th>
                                   </tr>
                                 </thead>
                                 <tbody>
+                                  {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
                                   {Array.isArray(section.data) && section.data.map((item: any, index: number) => (
                                     <motion.tr
                                       key={index}
@@ -596,22 +742,67 @@ export default function PatientOverviewModal({ isOpen, onClose, patientId }: Pat
               >
                 <div className="px-6 py-4 bg-gray-50 border-b border-gray-200">
                   <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
-                    <TrendingUp className="w-5 h-5 text-blue-600" />
+                    <TrendingUp className="w-5 h-5 text-blue" />
                     DONNÉES VITAUX
                   </h3>
                 </div>
-                <div className="p-6">
-                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    <div className="bg-gray-50 rounded-lg p-4">
-                      <h4 className="text-md font-semibold text-gray-900 mb-4">Courbe des températures</h4>
-                      <div className="h-48 bg-white rounded border flex items-center justify-center">
-                        <span className="text-gray-500">Graphique en cours de développement</span>
+
+                {/* Charts Section */}
+                <div className="p-6 space-y-6">
+                  {/* Temperature Chart */}
+                  <div className="bg-white rounded-lg p-4 shadow-sm border border-gray-200">
+                    <h4 className="text-md font-semibold text-gray-800 mb-4 flex items-center gap-2">
+                      <Thermometer className="w-4 h-4 text-red-500" />
+                      Évolution de la température
+                    </h4>
+                    <div className="h-64">
+                      <Line data={temperatureData} options={chartOptions} />
+                    </div>
+                  </div>
+
+                  {/* Blood Pressure Chart */}
+                  <div className="bg-white rounded-lg p-4 shadow-sm border border-gray-200">
+                    <h4 className="text-md font-semibold text-gray-800 mb-4 flex items-center gap-2">
+                      <Activity className="w-4 h-4 text-green-500" />
+                      Évolution de la tension artérielle
+                    </h4>
+                    <div className="h-64">
+                      <Line data={bloodPressureData} options={chartOptions} />
+                    </div>
+                  </div>
+
+                  {/* Weight Chart */}
+                  <div className="bg-white rounded-lg p-4 shadow-sm border border-gray-200">
+                    <h4 className="text-md font-semibold text-gray-800 mb-4 flex items-center gap-2">
+                      <Weight className="w-4 h-4 text-purple-500" />
+                      Évolution du poids
+                    </h4>
+                    <div className="h-64">
+                      <Bar data={weightData} options={chartOptions} />
+                    </div>
+                  </div>
+
+                  {/* Pulse and Oxygen Charts Row */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {/* Pulse Chart */}
+                    <div className="bg-white rounded-lg p-4 shadow-sm border border-gray-200">
+                      <h4 className="text-md font-semibold text-gray-800 mb-4 flex items-center gap-2">
+                        <Heart className="w-4 h-4 text-orange-500" />
+                        Évolution du pouls
+                      </h4>
+                      <div className="h-48">
+                        <Line data={pulseData} options={chartOptions} />
                       </div>
                     </div>
-                    <div className="bg-gray-50 rounded-lg p-4">
-                      <h4 className="text-md font-semibold text-gray-900 mb-4">Pression artérielle</h4>
-                      <div className="h-48 bg-white rounded border flex items-center justify-center">
-                        <span className="text-gray-500">Graphique en cours de développement</span>
+
+                    {/* Oxygen Saturation Chart */}
+                    <div className="bg-white rounded-lg p-4 shadow-sm border border-gray-200">
+                      <h4 className="text-md font-semibold text-gray-800 mb-4 flex items-center gap-2">
+                        <Activity className="w-4 h-4 text-green-500" />
+                        Saturation en oxygène
+                      </h4>
+                      <div className="h-48">
+                        <Bar data={oxygenData} options={chartOptions} />
                       </div>
                     </div>
                   </div>
@@ -641,13 +832,6 @@ export default function PatientOverviewModal({ isOpen, onClose, patientId }: Pat
           </motion.div>
         </Modal>
       )}
-                                    {/* <label className="text-sm font-medium text-gray-700">Antécédents chirurgicaux</label>
-                                    <textarea
-                                        value={section.data?.chirurgicaux || ''}
-                                        readOnly
-                                        className="w-full mt-2 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                        rows={3}
-                                    /> */}
     </AnimatePresence>
   )
 } 

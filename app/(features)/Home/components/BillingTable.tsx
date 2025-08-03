@@ -60,16 +60,16 @@ const columns = [
 ]
 
 export default function BillingTable({ onViewDetails }: BillingTableProps) {
-  const [data, setData] = useState<BillingInvoice[]>(mockData)
+  const [data] = useState<BillingInvoice[]>(mockData)
   const [searchTerm, setSearchTerm] = useState('')
-  const [dateDebut, setDateDebut] = useState('')
-  const [dateFin, setDateFin] = useState('')
-  const [itemsPerPage, setItemsPerPage] = useState(10)
   const [currentPage, setCurrentPage] = useState(1)
-  const [sortColumn, setSortColumn] = useState<string | null>(null)
+  const [itemsPerPage, setItemsPerPage] = useState(10)
+  const [sortField, setSortField] = useState<string>('')
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc')
+  const [startDate, setStartDate] = useState('01/06/2025')
+  const [endDate, setEndDate] = useState('02/08/2025')
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const [selectedInvoice, setSelectedInvoice] = useState<BillingInvoice | null>(null)
+  const [selectedInvoice] = useState<BillingInvoice | null>(null)
 
   const handleViewDetails = (invoiceId: string) => {
     if (onViewDetails) {
@@ -83,18 +83,18 @@ export default function BillingTable({ onViewDetails }: BillingTableProps) {
       value.toString().toLowerCase().includes(searchTerm.toLowerCase())
     )
     
-    const matchesDateRange = (!dateDebut || item.dateFacturation >= dateDebut) &&
-                           (!dateFin || item.dateFacturation <= dateFin)
+    const matchesDateRange = (!startDate || item.dateFacturation >= startDate) &&
+                           (!endDate || item.dateFacturation <= endDate)
     
     return matchesSearch && matchesDateRange
   })
 
   // Sort data
   const sortedData = [...filteredData].sort((a, b) => {
-    if (!sortColumn || sortColumn === 'actions') return 0
+    if (!sortField || sortField === 'actions') return 0
     
-    const aValue = a[sortColumn as keyof BillingInvoice]
-    const bValue = b[sortColumn as keyof BillingInvoice]
+    const aValue = a[sortField as keyof BillingInvoice]
+    const bValue = b[sortField as keyof BillingInvoice]
     
     if (sortDirection === 'asc') {
       return aValue.toString().localeCompare(bValue.toString())
@@ -111,10 +111,10 @@ export default function BillingTable({ onViewDetails }: BillingTableProps) {
   const paginatedData = sortedData.slice(startIndex, endIndex)
 
   const handleSort = (columnKey: string) => {
-    if (sortColumn === columnKey) {
+    if (sortField === columnKey) {
       setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc')
     } else {
-      setSortColumn(columnKey)
+      setSortField(columnKey)
       setSortDirection('asc')
     }
   }
@@ -164,7 +164,7 @@ export default function BillingTable({ onViewDetails }: BillingTableProps) {
       transition={{ duration: 0.5 }}
     >
       {/* Header Controls */}
-      <div className="p-6 border-b border-gray-200 bg-gradient-to-r from-blue-50 to-indigo-50">
+      <div className="p-6 border-b border-gray-200 bg-white">
         <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
           {/* Date Range Filter */}
           <div className="flex flex-col sm:flex-row gap-4">
@@ -172,9 +172,9 @@ export default function BillingTable({ onViewDetails }: BillingTableProps) {
               <Calendar className="w-4 h-4 text-gray-600" />
               <input
                 type="date"
-                value={dateDebut}
-                onChange={(e) => setDateDebut(e.target.value)}
-                className="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                value={startDate}
+                onChange={(e) => setStartDate(e.target.value)}
+                className="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue"
                 placeholder="Date de début"
               />
             </div>
@@ -182,14 +182,14 @@ export default function BillingTable({ onViewDetails }: BillingTableProps) {
               <Calendar className="w-4 h-4 text-gray-600" />
               <input
                 type="date"
-                value={dateFin}
-                onChange={(e) => setDateFin(e.target.value)}
+                value={endDate}
+                onChange={(e) => setEndDate(e.target.value)}
                 className="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="Date de fin"
               />
             </div>
             <motion.button
-              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2"
+              className="px-4 py-2 bg-blue text-white rounded-lg hover:bg-blue-950 transition-colors flex items-center gap-2"
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
             >
@@ -205,7 +205,7 @@ export default function BillingTable({ onViewDetails }: BillingTableProps) {
               <select
                 value={itemsPerPage}
                 onChange={(e) => setItemsPerPage(Number(e.target.value))}
-                className="border border-gray-300 rounded-lg px-3 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="border border-gray-300 rounded-lg px-3 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue"
               >
                 <option value={5}>5</option>
                 <option value={10}>10</option>
@@ -222,21 +222,21 @@ export default function BillingTable({ onViewDetails }: BillingTableProps) {
                 placeholder="Filtrer..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-48"
+                className="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue w-48"
               />
             </div>
           </div>
         </div>
 
         {/* Date Range Display */}
-        {(dateDebut || dateFin) && (
+        {(startDate || endDate) && (
           <motion.div
             className="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg"
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
           >
             <p className="text-red-700 font-medium">
-              LES FACTURES DU: {dateDebut || '...'} au {dateFin || '...'}
+              LES FACTURES DU: {startDate || '...'} au {endDate || '...'}
             </p>
           </motion.div>
         )}
@@ -301,7 +301,7 @@ export default function BillingTable({ onViewDetails }: BillingTableProps) {
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-2">
                       <motion.button
-                        className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                        className="p-2 text-blue hover:bg-blue-50 rounded-lg transition-colors"
                         whileHover={{ scale: 1.1 }}
                         whileTap={{ scale: 0.9 }}
                         title="Voir détails"
@@ -359,7 +359,7 @@ export default function BillingTable({ onViewDetails }: BillingTableProps) {
             </motion.button>
             
             <motion.button
-              className="px-4 py-2 text-sm bg-blue-600 text-white rounded-lg"
+              className="px-4 py-2 text-sm bg-blue text-white rounded-lg"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >

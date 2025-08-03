@@ -44,7 +44,7 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
             {/* Header */}
             <div className="text-center mb-8">
               <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Search className="w-8 h-8 text-blue-600" />
+                <Search className="w-8 h-8 text-blue" />
               </div>
               <h2 className="text-2xl font-bold text-gray-900 mb-2">
                 Rechercher un Patient
@@ -67,7 +67,7 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
                     type="text"
                     value={formData.nom}
                     onChange={(e) => handleInputChange('nom', e.target.value)}
-                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-200"
+                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue transition-all duration-200"
                     placeholder="Entrez le nom complet"
                   />
                 </div>
@@ -82,7 +82,7 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
                     type="text"
                     value={formData.codePatient}
                     onChange={(e) => handleInputChange('codePatient', e.target.value)}
-                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-200"
+                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue transition-all duration-200"
                     placeholder="Code patient"
                   />
                 </div>
@@ -97,7 +97,7 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
                     type="tel"
                     value={formData.telephone}
                     onChange={(e) => handleInputChange('telephone', e.target.value)}
-                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-200"
+                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue transition-all duration-200"
                     placeholder="Numéro de téléphone"
                   />
                 </div>
@@ -112,7 +112,7 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
                     type="text"
                     value={formData.structure}
                     onChange={(e) => handleInputChange('structure', e.target.value)}
-                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-200"
+                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue transition-all duration-200"
                     placeholder="Nom de la structure"
                   />
                 </div>
@@ -128,12 +128,12 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
                       type="date"
                       value={formData.dateNaissance}
                       onChange={(e) => handleInputChange('dateNaissance', e.target.value)}
-                      className="flex-1 px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-200"
+                      className="flex-1 px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue transition-all duration-200"
                     />
                     <select
                       value={formData.nd}
                       onChange={(e) => handleInputChange('nd', e.target.value)}
-                      className="px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-200"
+                      className="px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue transition-all duration-200"
                     >
                       <option value="ND">ND</option>
                       <option value="Exact">Exact</option>
@@ -157,7 +157,7 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
 
                 <motion.button
                   type="submit"
-                  className="flex-1 px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-all duration-200 shadow-sm"
+                  className="flex-1 px-6 py-3 bg-blue text-white font-medium rounded-lg hover:bg-blue-950 transition-all duration-200 shadow-sm"
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                 >

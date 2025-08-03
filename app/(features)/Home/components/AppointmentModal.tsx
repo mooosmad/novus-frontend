@@ -5,12 +5,23 @@ import { useState } from 'react'
 import { X, User, Clock, Calendar, MessageSquare } from 'lucide-react'
 import Modal from '@/components/Modal'
 
+interface AppointmentData {
+  doctor: string
+  appointmentNumber: string
+  startTime: string
+  duration: string
+  endTime: string
+  description: string
+  reason: string
+  smsMessage: string
+}
+
 interface AppointmentModalProps {
   isOpen: boolean
   onClose: () => void
   selectedDate?: Date | null
   selectedTimeSlot?: string
-  onSubmit?: (appointmentData: any) => void
+  onSubmit?: (appointmentData: AppointmentData) => void
 }
 
 export default function AppointmentModal({ 
@@ -228,7 +239,7 @@ export default function AppointmentModal({
                     <button
                       type="button"
                       onClick={onClose}
-                      className="flex-1 px-6 py-3 bg-blue-500 text-white font-medium rounded-lg hover:bg-blue-600 transition-colors"
+                      className="flex-1 px-6 py-3 bg-blue text-white font-medium rounded-lg hover:bg-blue-950 transition-colors"
                     >
                       Fermer
                     </button>

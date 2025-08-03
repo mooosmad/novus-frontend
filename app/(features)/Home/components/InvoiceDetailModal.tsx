@@ -6,17 +6,11 @@ import PatientOverviewModal from './PatientOverviewModal'
 import { 
   User, 
   Calendar, 
-  Phone, 
-  MapPin, 
-  Heart, 
-  Thermometer, 
   Weight, 
-  Eye, 
-  Archive, 
-  Calendar as CalendarIcon,
-  Printer,
+  Eye,
+  Edit,
   X,
-  Edit
+  Printer
 } from 'lucide-react'
 import Modal from '@/components/Modal'
 
@@ -96,11 +90,10 @@ const mockInvoiceDetail: InvoiceDetail = {
   ]
 }
 
-export default function InvoiceDetailModal({ isOpen, onClose, invoiceId }: InvoiceDetailModalProps) {
+export default function InvoiceDetailModal({ isOpen, onClose }: InvoiceDetailModalProps) {
   const [invoiceDetail] = useState<InvoiceDetail>(mockInvoiceDetail)
-  const [activeTab, setActiveTab] = useState<'overview' | 'archives' | 'appointments' | null>(null)
+  const [activeTab, setActiveTab] = useState<'overview' | 'archives' | 'appointments'>('overview')
 
-  const totalAmount = invoiceDetail.invoiceItems.reduce((sum, item) => sum + item.montantAPayer, 0)
   const [isPatientOverviewOpen, setIsPatientOverviewOpen] = useState(false)
 
   const containerVariants = {
@@ -125,7 +118,7 @@ export default function InvoiceDetailModal({ isOpen, onClose, invoiceId }: Invoi
             transition={{ duration: 0.3 }}
           >
             {/* Header */}
-            <div className="sticky top-0 bg-gradient-to-r from-blue-600 to-blue-700 text-white p-6 rounded-t-2xl">
+            <div className="sticky top-0 bg-gradient-to-r from-blue to-blue-950 text-white p-6 rounded-t-2xl">
               <div className="flex justify-between items-center">
                 <div className="flex items-center gap-4">
                   <h2 className="text-2xl font-bold">Information du patient</h2>
@@ -137,19 +130,21 @@ export default function InvoiceDetailModal({ isOpen, onClose, invoiceId }: Invoi
                       }}
                       className={`px-4 py-2 rounded-lg transition-colors ${
                         activeTab === 'overview' 
-                          ? 'bg-white text-blue-600' 
+                          ? 'bg-white text-blue' 
                           : 'bg-white/20 text-white hover:bg-white/30'
                       }`}
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
                     >
-                      Vue d'ensemble
+                      Vue d&apos;ensemble
                     </motion.button>
                     <motion.button
-                      onClick={() => setActiveTab('archives')}
+                      onClick={() => {
+                        setActiveTab('archives')
+                      }}
                       className={`px-4 py-2 rounded-lg transition-colors ${
                         activeTab === 'archives' 
-                          ? 'bg-white text-blue-600' 
+                          ? 'bg-white text-blue' 
                           : 'bg-white/20 text-white hover:bg-white/30'
                       }`}
                       whileHover={{ scale: 1.02 }}
@@ -161,7 +156,7 @@ export default function InvoiceDetailModal({ isOpen, onClose, invoiceId }: Invoi
                       onClick={() => setActiveTab('appointments')}
                       className={`px-4 py-2 rounded-lg transition-colors ${
                         activeTab === 'appointments' 
-                          ? 'bg-white text-blue-600' 
+                          ? 'bg-white text-blue' 
                           : 'bg-white/20 text-white hover:bg-white/30'
                       }`}
                       whileHover={{ scale: 1.02 }}
@@ -227,15 +222,7 @@ export default function InvoiceDetailModal({ isOpen, onClose, invoiceId }: Invoi
                     <div className="space-y-4">
                       <motion.div variants={itemVariants} className="space-y-2">
                         <label className="text-sm font-medium text-gray-600 flex items-center gap-2">
-                          <Phone className="w-4 h-4" />
-                          Téléphone
-                        </label>
-                        <p className="text-lg text-gray-900">{invoiceDetail.patient.telephone}</p>
-                      </motion.div>
-
-                      <motion.div variants={itemVariants} className="space-y-2">
-                        <label className="text-sm font-medium text-gray-600 flex items-center gap-2">
-                          <MapPin className="w-4 h-4" />
+                          <Eye className="w-4 h-4" />
                           Adresse
                         </label>
                         <p className="text-lg text-gray-900">{invoiceDetail.patient.adresse}</p>
@@ -273,7 +260,7 @@ export default function InvoiceDetailModal({ isOpen, onClose, invoiceId }: Invoi
                             <span className="text-sm text-gray-600">{invoiceDetail.constants.poids} kg</span>
                           </div>
                           <div className="flex items-center gap-2">
-                            <Thermometer className="w-4 h-4 text-gray-600" />
+                            <Eye className="w-4 h-4 text-gray-600" />
                             <span className="text-sm text-gray-600">t°: {invoiceDetail.constants.temperature}</span>
                           </div>
                         </div>
@@ -365,7 +352,7 @@ export default function InvoiceDetailModal({ isOpen, onClose, invoiceId }: Invoi
                         </label>
                       </div>
                       <motion.button
-                        className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2"
+                        className="px-6 py-3 bg-blue text-white rounded-lg hover:bg-blue-950 transition-colors flex items-center gap-2"
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
                       >
@@ -380,7 +367,10 @@ export default function InvoiceDetailModal({ isOpen, onClose, invoiceId }: Invoi
           </motion.div>
         </Modal>
       )}
-     { <PatientOverviewModal isOpen={isPatientOverviewOpen} onClose={() => {setIsPatientOverviewOpen(false),setActiveTab(null)}} />}
+     { <PatientOverviewModal isOpen={isPatientOverviewOpen} onClose={() => {
+        setIsPatientOverviewOpen(false)
+        setActiveTab('overview')
+      }} />}
     </AnimatePresence>
   )
 }   

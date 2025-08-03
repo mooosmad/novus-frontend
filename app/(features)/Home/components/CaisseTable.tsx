@@ -2,7 +2,7 @@
 
 import { motion } from 'framer-motion'
 import { useState } from 'react'
-import { Search, Calendar, Filter, Eye, Download, Edit, DollarSign, CreditCard, CheckCircle, Smartphone } from 'lucide-react'
+import { Search, Calendar, Filter, Eye } from 'lucide-react'
 
 interface CaisseInvoice {
   id: string
@@ -117,7 +117,7 @@ export default function CaisseTable({ onViewDetails }: CaisseTableProps) {
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'payee': return 'text-green-600 bg-green-100'
-      case 'partiellement_payee': return 'text-blue-600 bg-blue-100'
+      case 'partiellement_payee': return 'text-blue bg-gray-200'
       case 'non_payee': return 'text-red-600 bg-red-100'
       default: return 'text-gray-600 bg-gray-100'
     }
@@ -157,7 +157,7 @@ export default function CaisseTable({ onViewDetails }: CaisseTableProps) {
                 type="date"
                 value={new Date(startDate).toLocaleDateString('fr-FR')}
                 onChange={(e) => setStartDate(e.target.value)}
-                className="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue"
                 placeholder="01/06/2025"
               />
             </div>
@@ -168,12 +168,12 @@ export default function CaisseTable({ onViewDetails }: CaisseTableProps) {
                 type="date"
                 value={new Date(endDate).toLocaleDateString('fr-FR')}
                 onChange={(e) => setEndDate(e.target.value)}
-                className="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue"
                 placeholder="02/08/2025"
               />
             </div>
             <motion.button
-              className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors flex items-center gap-2"
+              className="px-4 py-2 bg-blue text-white rounded-lg hover:bg-blue-950 transition-colors flex items-center gap-2"
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
             >
@@ -189,7 +189,7 @@ export default function CaisseTable({ onViewDetails }: CaisseTableProps) {
               <select
                 value={itemsPerPage}
                 onChange={(e) => setItemsPerPage(Number(e.target.value))}
-                className="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue"
               >
                 <option value={5}>5</option>
                 <option value={10}>10</option>
@@ -205,7 +205,7 @@ export default function CaisseTable({ onViewDetails }: CaisseTableProps) {
                 placeholder="Filtrer :"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue"
               />
             </div>
           </div>
@@ -275,7 +275,7 @@ export default function CaisseTable({ onViewDetails }: CaisseTableProps) {
                 <td className="px-6 py-4">
                   <div className="flex items-center gap-2">
                     <motion.button
-                      className="p-2 text-green-600 hover:bg-green-50 rounded-lg transition-colors"
+                      className="p-2 text-blue hover:bg-blue-50 rounded-lg transition-colors"
                       onClick={() => handleViewDetails(item.id)}
                       whileHover={{ scale: 1.1 }}
                       whileTap={{ scale: 0.9 }}
@@ -307,7 +307,7 @@ export default function CaisseTable({ onViewDetails }: CaisseTableProps) {
             >
               Précédent
             </motion.button>
-            <span className="px-3 py-2 text-sm bg-blue-500 text-white rounded-lg">
+            <span className="px-3 py-2 text-sm bg-blue text-white rounded-lg">
               {currentPage}
             </span>
             <motion.button

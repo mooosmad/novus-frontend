@@ -12,8 +12,6 @@ import {
   Settings,
   Shield,
   User,
-  LogOut,
-  ChevronDown,
   ChevronRight
 } from 'lucide-react'
 
@@ -256,7 +254,7 @@ export default function Sidebar() {
                   }}
                   className={`relative w-full flex items-center justify-between px-3 py-3 rounded-xl transition-all duration-200 group ${
                     isActive
-                      ? 'bg-gray-900 text-white shadow-lg'
+                      ? 'bg-blue text-white shadow-lg'
                       : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
                   }`}
                   variants={itemVariants}
@@ -356,7 +354,7 @@ export default function Sidebar() {
         {/* Toggle Button */}
         <motion.button
           onClick={() => setIsCollapsed(!isCollapsed)}
-          className="absolute -right-3 top-1/2 transform -translate-y-1/2 w-6 h-6 bg-gray-900 text-white rounded-full flex items-center justify-center shadow-lg hover:bg-gray-800 transition-colors"
+          className="absolute -right-3 top-1/2 transform -translate-y-1/2 w-6 h-6 bg-blue text-white rounded-full flex items-center justify-center shadow-lg hover:bg-blue transition-colors"
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
         >

@@ -5,25 +5,19 @@ import { useState } from 'react'
 import { 
   User, 
   Calendar, 
-  Phone, 
-  MapPin, 
-  Heart, 
-  Thermometer, 
-  Weight, 
   Activity,
   FileText,
   DollarSign,
   CreditCard,
-  CheckCircle,
   Smartphone,
   Eye,
   Edit,
-  Plus,
-  Trash2,
   X,
   Printer,
   Wallet,
-  CheckSquare
+  CheckSquare,
+  Weight,
+  Thermometer
 } from 'lucide-react'
 import Modal from '@/components/Modal'
 import PatientOverviewModal from './PatientOverviewModal'
@@ -154,13 +148,12 @@ const mockCaisseDetail: CaisseDetail = {
   remainingAmount: 2000
 }
 
-export default function CaisseDetailModal({ isOpen, onClose, invoiceId }: CaisseDetailModalProps) {
+export default function CaisseDetailModal({ isOpen, onClose }: CaisseDetailModalProps) {
   const [caisseDetail] = useState<CaisseDetail>(mockCaisseDetail)
   const [amountToPay, setAmountToPay] = useState('')
   const [paymentReference, setPaymentReference] = useState('')
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<string>('')
   const [isPatientOverviewOpen, setIsPatientOverviewOpen] = useState(false)
-  const [activeTab, setActiveTab] = useState<'overview' | 'archives' | 'appointments' | null>(null)
 
   const containerVariants = {
     hidden: { opacity: 0, scale: 0.8, y: 20 },
@@ -186,7 +179,7 @@ export default function CaisseDetailModal({ isOpen, onClose, invoiceId }: Caisse
             transition={{ duration: 0.3 }}
           >
             {/* Header */}
-            <div className="sticky top-0 bg-gradient-to-r from-green-500 to-green-600 text-white p-6 rounded-t-2xl">
+            <div className="sticky top-0 bg-gradient-to-r from-blue to-blue-950 text-white p-6 rounded-t-2xl">
               <div className="flex justify-between items-center">
                 <div className="flex items-center gap-4">
                   <h2 className="text-2xl font-bold">Détails de Paiement - Facture #{caisseDetail.invoiceId}</h2>
@@ -196,19 +189,17 @@ export default function CaisseDetailModal({ isOpen, onClose, invoiceId }: Caisse
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
                       onClick={() => {
-                        setActiveTab('overview')
                         setIsPatientOverviewOpen(true)
                       }}
                     >
                       <Eye className="w-4 h-4" />
-                      Vue d'ensemble
+                      Vue d&apos;ensemble
                     </motion.button>
                     <motion.button
                       className="px-4 py-2 bg-white/20 text-white rounded-lg hover:bg-white/30 transition-colors flex items-center gap-2"
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
                       onClick={() => {
-                        setActiveTab('archives')
                         setIsPatientOverviewOpen(true)
                       }}
                     >
@@ -220,7 +211,6 @@ export default function CaisseDetailModal({ isOpen, onClose, invoiceId }: Caisse
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
                       onClick={() => {
-                        setActiveTab('appointments')
                         setIsPatientOverviewOpen(true)
                       }}
                     >
@@ -232,7 +222,6 @@ export default function CaisseDetailModal({ isOpen, onClose, invoiceId }: Caisse
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
                       onClick={() => {
-                        setActiveTab('appointments')
                         setIsPatientOverviewOpen(true)
                       }}
                     >
@@ -263,7 +252,7 @@ export default function CaisseDetailModal({ isOpen, onClose, invoiceId }: Caisse
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                   <div className="space-y-3">
                     <div className="flex items-center gap-2">
-                      <User className="w-5 h-5 text-green-600" />
+                      <User className="w-5 h-5 text-blue" />
                       <span className="text-lg font-semibold text-gray-900">
                         {caisseDetail.patient.name} {caisseDetail.patient.firstName}
                       </span>
@@ -277,7 +266,7 @@ export default function CaisseDetailModal({ isOpen, onClose, invoiceId }: Caisse
 
                   <div className="space-y-3">
                     <div className="flex items-center gap-2">
-                      <Activity className="w-5 h-5 text-green-600" />
+                      <Activity className="w-5 h-5 text-blue" />
                       <span className="text-lg font-semibold text-gray-900">Constantes (16/07/2025)</span>
                     </div>
                     <div className="space-y-1">
@@ -289,7 +278,7 @@ export default function CaisseDetailModal({ isOpen, onClose, invoiceId }: Caisse
 
                   <div className="space-y-3">
                     <div className="flex items-center gap-2">
-                      <Weight className="w-5 h-5 text-green-600" />
+                      <Weight className="w-5 h-5 text-blue" />
                       <span className="text-lg font-semibold text-gray-900">Poids</span>
                     </div>
                     <div className="space-y-1">
@@ -299,7 +288,7 @@ export default function CaisseDetailModal({ isOpen, onClose, invoiceId }: Caisse
 
                   <div className="space-y-3">
                     <div className="flex items-center gap-2">
-                      <Thermometer className="w-5 h-5 text-green-600" />
+                      <Thermometer className="w-5 h-5 text-blue" />
                       <span className="text-lg font-semibold text-gray-900">Température</span>
                     </div>
                     <div className="space-y-1">
@@ -369,8 +358,8 @@ export default function CaisseDetailModal({ isOpen, onClose, invoiceId }: Caisse
                 <div className="p-6">
                   <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
                     <div className="bg-blue-50 rounded-lg p-4">
-                      <h4 className="text-sm font-semibold text-blue-900 mb-2">Montant initial</h4>
-                      <p className="text-2xl font-bold text-blue-900">{caisseDetail.initialAmount.toLocaleString()} F CFA</p>
+                      <h4 className="text-sm font-semibold text-blue mb-2">Montant initial</h4>
+                      <p className="text-2xl font-bold text-blue">{caisseDetail.initialAmount.toLocaleString()} F CFA</p>
                     </div>
                     <div className="bg-green-50 rounded-lg p-4">
                       <h4 className="text-sm font-semibold text-green-900 mb-2">Montant payé</h4>
@@ -420,7 +409,7 @@ export default function CaisseDetailModal({ isOpen, onClose, invoiceId }: Caisse
                       <span className="text-sm text-gray-700">Sans entête</span>
                     </label>
                     <motion.button
-                      className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2"
+                      className="px-4 py-2 bg-blue text-white rounded-lg hover:bg-blue-950 transition-colors flex items-center gap-2"
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
                     >
@@ -452,7 +441,7 @@ export default function CaisseDetailModal({ isOpen, onClose, invoiceId }: Caisse
                         type="number"
                         value={amountToPay}
                         onChange={(e) => setAmountToPay(e.target.value)}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue"
                         placeholder="0"
                       />
                     </div>
@@ -464,7 +453,7 @@ export default function CaisseDetailModal({ isOpen, onClose, invoiceId }: Caisse
                         type="text"
                         value={paymentReference}
                         onChange={(e) => setPaymentReference(e.target.value)}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue"
                         placeholder="Ex:Banque / 214555"
                       />
                     </div>
@@ -475,10 +464,10 @@ export default function CaisseDetailModal({ isOpen, onClose, invoiceId }: Caisse
                     <label className="block text-sm font-medium text-gray-700 mb-3">Mode de paiement</label>
                     <div className="flex flex-wrap gap-4">
                       {[
-                        { id: 'cash', icon: Wallet, label: 'Espèces', color: 'bg-green-500' },
-                        { id: 'card', icon: CreditCard, label: 'Carte', color: 'bg-blue-500' },
+                        { id: 'cash', icon: Wallet, label: 'Espèces', color: 'bg-blue' },
+                        { id: 'card', icon: CreditCard, label: 'Carte', color: 'bg-blue' },
                         { id: 'check', icon: CheckSquare, label: 'Chèque de banque', color: 'bg-purple-500' },
-                        { id: 'orange', icon: Smartphone, label: 'Orange Money', color: 'bg-orange-500' },
+                        { id: 'orange', icon: Smartphone, label: 'Orange Money', color: 'bg-yellow-500' },
                         { id: 'mtn', icon: Smartphone, label: 'MTN Money', color: 'bg-yellow-500' },
                         { id: 'wave', icon: Smartphone, label: 'Wave', color: 'bg-teal-500' }
                       ].map((method) => (
@@ -487,7 +476,7 @@ export default function CaisseDetailModal({ isOpen, onClose, invoiceId }: Caisse
                           onClick={() => setSelectedPaymentMethod(method.id)}
                           className={`flex items-center gap-2 px-4 py-2 rounded-lg border-2 transition-colors ${
                             selectedPaymentMethod === method.id
-                              ? 'border-green-500 bg-green-50 text-green-700'
+                              ? 'border-blue bg-blue-50 text-blue'
                               : 'border-gray-300 hover:border-gray-400'
                           }`}
                           whileHover={{ scale: 1.02 }}
@@ -516,7 +505,7 @@ export default function CaisseDetailModal({ isOpen, onClose, invoiceId }: Caisse
           </motion.div>
         </Modal>
       )}
-     { <PatientOverviewModal isOpen={isPatientOverviewOpen} onClose={() => {setIsPatientOverviewOpen(false),setActiveTab(null)}} />}
+     { <PatientOverviewModal isOpen={isPatientOverviewOpen} onClose={() => {setIsPatientOverviewOpen(false)}} />}
 
     </AnimatePresence>
   )

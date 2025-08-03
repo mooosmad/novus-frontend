@@ -64,13 +64,13 @@ const columns = [
 ]
 
 export default function MedicalActsTable() {
-  const [data, setData] = useState<MedicalAct[]>(mockData)
+  const [data] = useState<MedicalAct[]>(mockData)
   const [searchTerm, setSearchTerm] = useState('')
-  const [itemsPerPage, setItemsPerPage] = useState(10)
   const [currentPage, setCurrentPage] = useState(1)
-  const [sortColumn, setSortColumn] = useState<string | null>(null)
+  const [itemsPerPage, setItemsPerPage] = useState(10)
+  const [sortField, setSortField] = useState<string>('')
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc')
-  const [visibleColumns, setVisibleColumns] = useState<Set<string>>(new Set(columns.map(col => col.key)))
+  const [visibleColumns] = useState<Set<string>>(new Set(columns.map(col => col.key)))
 
   // Filter data based on search term
   const filteredData = data.filter(item =>
@@ -81,10 +81,10 @@ export default function MedicalActsTable() {
 
   // Sort data
   const sortedData = [...filteredData].sort((a, b) => {
-    if (!sortColumn) return 0
+    if (!sortField) return 0
     
-    const aValue = a[sortColumn as keyof MedicalAct]
-    const bValue = b[sortColumn as keyof MedicalAct]
+    const aValue = a[sortField as keyof MedicalAct]
+    const bValue = b[sortField as keyof MedicalAct]
     
     if (sortDirection === 'asc') {
       return aValue.toString().localeCompare(bValue.toString())
@@ -101,22 +101,12 @@ export default function MedicalActsTable() {
   const paginatedData = sortedData.slice(startIndex, endIndex)
 
   const handleSort = (columnKey: string) => {
-    if (sortColumn === columnKey) {
+    if (sortField === columnKey) {
       setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc')
     } else {
-      setSortColumn(columnKey)
+      setSortField(columnKey)
       setSortDirection('asc')
     }
-  }
-
-  const toggleColumn = (columnKey: string) => {
-    const newVisibleColumns = new Set(visibleColumns)
-    if (newVisibleColumns.has(columnKey)) {
-      newVisibleColumns.delete(columnKey)
-    } else {
-      newVisibleColumns.add(columnKey)
-    }
-    setVisibleColumns(newVisibleColumns)
   }
 
   const containerVariants = {
@@ -189,7 +179,7 @@ export default function MedicalActsTable() {
                           onClick={() => handleSort(column.key)}
                           className="p-1 hover:bg-gray-200 rounded transition-colors"
                         >
-                          {sortColumn === column.key ? (
+                          {sortField === column.key ? (
                             sortDirection === 'asc' ? (
                               <ChevronUp className="w-4 h-4" />
                             ) : (

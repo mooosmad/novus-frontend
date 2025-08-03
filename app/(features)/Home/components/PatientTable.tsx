@@ -201,7 +201,7 @@ export default function PatientTable({ onViewDetails }: PatientTableProps) {
                   )}
                   <td className="px-6 py-4">
                     <motion.button 
-                      className="text-blue-600 hover:text-blue-800 transition-colors p-2 hover:bg-blue-50 rounded-lg"
+                      className="text-blue hover:text-blue-950 transition-colors p-2 hover:bg-blue-50 rounded-lg"
                       onClick={() => handleViewDetails(patient.id)}
                       whileHover={{ scale: 1.1 }}
                       whileTap={{ scale: 0.9 }}

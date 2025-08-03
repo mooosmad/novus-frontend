@@ -59,7 +59,7 @@ export default function Login2Page() {
   }
 
   return (
-    <div className="bg-[url('/medic.jpg')] h-screen w-screen bg-cover bg-center relative">
+    <div className="bg-[url('https://img.freepik.com/free-photo/medium-shot-health-worker-with-mask_23-2148814234.jpg?semt=ais_hybrid&w=740&q=80')] h-screen w-screen bg-cover bg-center relative">
       {/* Overlay pour améliorer la lisibilité */}
       <div className="absolute inset-0 bg-black/20" />
       
@@ -96,7 +96,7 @@ export default function Login2Page() {
               transition={{ duration: 0.6, delay: 0.4 }}
             >
               <motion.div
-                className="w-16 h-16 bg-blue-950 rounded-2xl flex items-center justify-center mb-4 mx-auto"
+                className="w-16 h-16 bg-blue rounded-2xl flex items-center justify-center mb-4 mx-auto"
                 initial={{ scale: 0.8, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 transition={{ delay: 0.6, duration: 0.5 }}
@@ -214,7 +214,7 @@ export default function Login2Page() {
               <motion.div className="pt-4">
                 <motion.button
                   type="submit"
-                  className="w-full h-12 bg-blue-950 text-white font-medium rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full h-12 bg-blue text-white font-medium rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                   whileHover={!isLoading ? { scale: 1.02 } : {}}
                   whileTap={!isLoading ? { scale: 0.98 } : {}}
                   disabled={isLoading}

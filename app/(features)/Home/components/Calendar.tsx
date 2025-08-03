@@ -5,6 +5,17 @@ import { useState } from 'react'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import AppointmentModal from './AppointmentModal'
 
+interface AppointmentData {
+  doctor: string
+  appointmentNumber: string
+  startTime: string
+  duration: string
+  endTime: string
+  description: string
+  reason: string
+  smsMessage: string
+}
+
 interface CalendarEvent {
   id: string
   doctor: string
@@ -110,7 +121,7 @@ export default function Calendar({ className = "" }: CalendarProps) {
     setIsAppointmentModalOpen(true)
   }
 
-  const handleAppointmentSubmit = (appointmentData: any) => {
+  const handleAppointmentSubmit = (appointmentData: AppointmentData) => {
     const newEvent: CalendarEvent = {
       id: Date.now().toString(),
       doctor: appointmentData.doctor,
@@ -160,7 +171,7 @@ export default function Calendar({ className = "" }: CalendarProps) {
             </button>
             <button
               onClick={goToToday}
-              className="px-4 py-2 text-sm font-medium text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+              className="px-4 py-2 text-sm font-medium text-blue hover:bg-blue-50 rounded-lg transition-colors"
             >
               Aujourd&apos;hui
             </button>
@@ -201,8 +212,8 @@ export default function Calendar({ className = "" }: CalendarProps) {
                   className={`
                     aspect-square p-2 rounded-lg text-sm font-medium transition-all duration-200 relative
                     ${!day ? 'invisible' : ''}
-                    ${isToday(day) ? 'bg-blue-100 text-blue-700' : ''}
-                    ${isSelected(day) ? 'bg-blue-600 text-white' : ''}
+                    ${isToday(day) ? 'bg-blue-100 text-blue' : ''}
+                    ${isSelected(day) ? 'bg-blue text-white' : ''}
                     ${day && !isToday(day) && !isSelected(day) ? 'hover:bg-gray-100 text-gray-700' : ''}
                   `}
                   whileHover={day ? { scale: 1.05 } : {}}
@@ -250,7 +261,7 @@ export default function Calendar({ className = "" }: CalendarProps) {
             </button>
             <button
               onClick={goToToday}
-              className="px-4 py-2 text-sm font-medium text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+              className="px-4 py-2 text-sm font-medium text-blue hover:bg-blue-50 rounded-lg transition-colors"
             >
               Aujourd&apos;hui
             </button>
@@ -278,7 +289,7 @@ export default function Calendar({ className = "" }: CalendarProps) {
                 onClick={() => setViewMode(view.key as 'day' | 'week' | 'month' | 'doctor')}
                 className={`px-3 py-1.5 text-sm font-medium rounded-lg transition-colors ${
                   viewMode === view.key
-                    ? 'bg-blue-600 text-white'
+                    ? 'bg-blue text-white'
                     : 'text-gray-600 hover:bg-gray-100'
                 }`}
               >

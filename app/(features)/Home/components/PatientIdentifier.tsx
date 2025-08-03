@@ -30,7 +30,7 @@ export default function PatientIdentifier({ShowNewPatientButton = true}: {ShowNe
   return (
     <>
       <motion.div 
-        className="bg-white rounded-xl p-6 shadow-sm border border-gray-100"
+        className="bg-white rounded-xl p-6 shadow-xl border border-gray-100  shadow-blue"
         variants={containerVariants}
         initial="hidden"
         animate="visible"
@@ -67,7 +67,7 @@ export default function PatientIdentifier({ShowNewPatientButton = true}: {ShowNe
           {ShowNewPatientButton && (
             <motion.button
               onClick={() => setIsPatientStepperOpen(true)}
-              className="flex items-center gap-2 px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-all duration-200 shadow-sm"
+              className="flex items-center gap-2 px-6 py-3 bg-blue text-white font-medium rounded-lg hover:bg-blue-950 transition-all duration-200 shadow-sm"
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
           >
